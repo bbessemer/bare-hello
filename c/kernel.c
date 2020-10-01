@@ -4,7 +4,7 @@
  */
 
 #define MB_MAGIC    0x1badb002
-#define MB_FLAGS    ((1 << 0) | (1 << 1))
+#define MB_FLAGS    ((1 << 0) | (1 << 1) | (1 << 16))
 #define MB_CHECKSUM -(MB_MAGIC + MB_FLAGS)
 
 struct mbhdr
@@ -12,10 +12,27 @@ struct mbhdr
     int magic;
     int flags;
     int checksum;
+    void *header_addr;
+    void *load_addr;
+    void *load_end_addr;
+    void *bss_end_addr;
+    void *entry_addr;
 };
 
+extern char __end[];
+void _start(void);
+
 __attribute__((section(".multiboot")))
-struct mbhdr multiboot_header = { MB_MAGIC, MB_FLAGS, MB_CHECKSUM };
+struct mbhdr multiboot_header = {
+    MB_MAGIC,
+    MB_FLAGS,
+    MB_CHECKSUM,
+    &multiboot_header,
+    (void *)0x100000,
+    __end,
+    (void *)0,
+    _start
+};
 
 /* Just below the ISA memory hole */
 #define STACK_TOP   0xf00000

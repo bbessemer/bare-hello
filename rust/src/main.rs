@@ -13,13 +13,24 @@ fn panic(_info: &PanicInfo) -> ! {
 }
 
 const MB_MAGIC: i32 = 0x1badb002;
-const MB_FLAGS: i32 = 3;
+const MB_FLAGS: i32 = (1 << 0) | (1 << 1) | (1 << 16);
 const MB_CHECKSUM: i32 = -(MB_MAGIC + MB_FLAGS);
 
 struct MultibootHeader {
     _magic: i32,
     _flags: i32,
     _checksum: i32,
+    _header_addr: &'static MultibootHeader,
+    _load_addr: u32,
+    // This is not a function. It's just the only way Rust has to get the
+    // address of an external symbol.
+    _load_end_addr: unsafe extern fn(),
+    _bss_end_addr: u32,
+    _start_addr: unsafe extern fn() -> !,
+}
+
+extern {
+    fn __end();
 }
 
 #[no_mangle]
@@ -28,6 +39,11 @@ static multiboot_header: MultibootHeader = MultibootHeader {
     _magic: MB_MAGIC,
     _flags: MB_FLAGS,
     _checksum: MB_CHECKSUM,
+    _header_addr: &multiboot_header,
+    _load_addr: 0x100000,
+    _load_end_addr: __end,
+    _bss_end_addr: 0,
+    _start_addr: _start,
 };
 
 struct Vga {

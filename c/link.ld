@@ -13,9 +13,10 @@ SECTIONS
         *(.multiboot)
         *(.text)
     }
-    .data ALIGN(4096) :
+    .data :
     {
         *(.rodata*)
         *(.data)
     }
+    __end = .;
 }
