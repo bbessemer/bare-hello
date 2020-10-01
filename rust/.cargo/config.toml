@@ -1,0 +1,16 @@
+[build]
+target = "i586-unknown-linux-gnu"
+
+[target.i586-unknown-linux-gnu]
+linker = "ld"
+rustflags = [
+    "-C", "target-feature=-mmx,-sse,+soft-float",
+    "-C", "link-args=-m elf_i386 -T /home/brent/bare-hello/rust/link.ld",
+    "-C", "no-redzone=y"
+]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
