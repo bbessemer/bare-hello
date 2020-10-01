@@ -24,7 +24,6 @@ global _start
 _start:
     mov esp, 0xf00000   ; Just below ISA hole
 
-    mov edi, 0xb8000
     mov esi, hello
     mov ah, 0x07
     call vga_clear
@@ -33,6 +32,7 @@ _start:
     jmp .halt
 
 vga_clear:
+    mov edi, 0xb8000
     mov ecx, 80*25
 .print:
     lodsb
