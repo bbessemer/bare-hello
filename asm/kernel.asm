@@ -31,7 +31,7 @@ _start:
     hlt
     jmp .halt
 
-vga_clear:
+vga_print:
     mov edi, 0xb8000
     mov ecx, 80*25
 .print:
