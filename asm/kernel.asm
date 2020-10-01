@@ -26,7 +26,7 @@ _start:
 
     mov esi, hello
     mov ah, 0x07
-    call vga_clear
+    call vga_print
 .halt:
     hlt
     jmp .halt
